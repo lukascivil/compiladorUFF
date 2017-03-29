@@ -1,0 +1,6 @@
+caramba{
+teste.loko
+}
+890variavel
+4213
+das12345
