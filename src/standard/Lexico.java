@@ -1,5 +1,5 @@
 /*
- * @author Tarcisio
+ * @author Tarcisio e Lucas
  */
 package standard;
 
@@ -76,31 +76,31 @@ public class Lexico {
     final static Map<Integer, String> TABELA;
     static {
         Map<Integer, String> aMap = new HashMap<>();
-        aMap.put(1,"var");
-        aMap.put(2,",");
-        aMap.put(3,";");
-        aMap.put(4,"begin");
-        aMap.put(5,"end");
-        aMap.put(6,"print");
-        aMap.put(7,"read");
-        aMap.put(8,"if");
-        aMap.put(9,"then");
-        aMap.put(10,"for");
-        aMap.put(11,"to");
-        aMap.put(12,"do");
-        aMap.put(13,"else");
-        aMap.put(14,":=");
-        aMap.put(15,"+");
-        aMap.put(16,"-");
-        aMap.put(17,"*");
-        aMap.put(18,"/");
-        aMap.put(19,"=");
+        aMap.put(1,".");
+        aMap.put(2,"var");
+        aMap.put(3,",");
+        aMap.put(4,";");
+        aMap.put(5,"begin");
+        aMap.put(6,"end");
+        aMap.put(7,"print");
+        aMap.put(8,"read");
+        aMap.put(9,"if");
+        aMap.put(10,"then");
+        aMap.put(11,"for");
+        aMap.put(12,"to");
+        aMap.put(13,"do");
+        aMap.put(14,"else");
+        aMap.put(15,":=");
+        aMap.put(16,"+");
+        aMap.put(17,"-");
+        aMap.put(18,"*");
+        aMap.put(19,"/");
         aMap.put(20,"(");
         aMap.put(21,")");
-        aMap.put(22,"==");
+        aMap.put(22,"=");
         aMap.put(23,"<>");
-        aMap.put(24,"<");
-        aMap.put(25,">");
+        aMap.put(24,">");
+        aMap.put(25,"<");
         aMap.put(26,">=");
         aMap.put(27,"<=");
         aMap.put(28,"variavel");
@@ -112,6 +112,7 @@ public class Lexico {
     
     
     public Token NextToken(Scanner arquivo){
+        
         if(!arquivo.hasNext() && buffer.equals("EOF")){
             buffer = null;
             return new Token(this.getKey("EOF"),"EOF", "EOF");
@@ -124,34 +125,106 @@ public class Lexico {
             buffer=null;
             if(!arquivo.hasNext()) buffer="EOF";
         }        
+        
         texto=texto.replace("\t", "");
         texto=texto.replace("\n", "");
         texto=texto.replace(" ", "");
         int i=0;
+        
+        //Pega Variável
         while(i<texto.length() && Character.isLetter(texto.charAt(i))){
             i++;
         }
+        
         if(i!=0){
-            buffer=texto.substring(i);    
-            int chave=getKey("variavel");
-            return new Token(chave,TABELA.get(chave),texto.substring(0, i));        
+            buffer = texto.substring(i); 
+            int chave;
+            
+            switch (texto.substring(0, i)) {
+                case "var":
+                    chave = getKey("var");
+                    break;
+                case "begin": 
+                    chave = getKey("begin");
+                    break;
+                case "end": 
+                    chave = getKey("end");
+                    break;
+                case "print": 
+                    chave = getKey("print");
+                    break;
+                case "read": 
+                    chave = getKey("read");
+                    break;
+                case "if": 
+                    chave = getKey("if");
+                    break;
+                case "then": 
+                    chave = getKey("then");
+                    break;
+                case "for": 
+                    chave = getKey("for");
+                    break;
+                case "to": 
+                    chave = getKey("to");
+                    break;
+                case "do": 
+                    chave = getKey("do");
+                    break;
+                case "else": 
+                    chave = getKey("else");
+                    break;
+                default: 
+                    chave = getKey("variavel");
+                    break;
+            }
+            return new Token(chave, TABELA.get(chave), texto.substring(0, i));        
         }
-        //achar numeros
+        
+        //Pega Número
         while(i<texto.length() && Character.isDigit(texto.charAt(i))){
             i++;
         }
+       
         if(i!=0){
             buffer=texto.substring(i);    
             int chave=getKey("numero");
             return new Token(chave,TABELA.get(chave),texto.substring(0, i));        
         }
+    
         //achar simbolos soltos
         String aux=texto.substring(i,i+1);
-        boolean aux2 = TABELA.containsValue(aux);
-        if(TABELA.containsValue(aux)){ //aqui eu tratei a maior partes dos tokens.
+         
+        if(TABELA.containsValue(aux) || aux.equals(":")){ //aqui eu tratei a maior partes dos tokens. //Gambi
+
             Token tk=null;
             int key;
             switch (texto.charAt(i)){
+                case '.':
+                        key=this.getKey(".");
+                        tk=new Token(key,texto.substring(i,i+1),TABELA.get(key));
+                    break;
+                case ',':
+                        key=this.getKey(",");
+                        tk=new Token(key,texto.substring(i,i+1),TABELA.get(key));
+                    break;    
+                case ';':
+                        key=this.getKey(";");
+                        tk=new Token(key,texto.substring(i,i+1),TABELA.get(key));
+                    break;
+                case ':': //Gambi
+                        if(texto.length()>i+1 && texto.charAt(i+1)=='='){
+                            key=this.getKey(":=");
+                            tk=new Token(key,texto.substring(i,i+2),TABELA.get(key));                              
+                        }else{
+                            if ((i+1)<texto.length()) buffer=texto.substring(i+1);
+                            return new Token(-1,texto.substring(i,i+1),"Erro Lexico");
+                        }
+                    break;
+                case '+':
+                        key=this.getKey("+");
+                        tk=new Token(key,texto.substring(i,i+1),TABELA.get(key));
+                    break;
                 case '-':
                         key=this.getKey("-");
                         tk=new Token(key,texto.substring(i,i+1),TABELA.get(key));
@@ -211,6 +284,7 @@ public class Lexico {
             return tk;
         }else{
             if ((i+1)<texto.length()) buffer=texto.substring(i+1);
+            
             return new Token(-1,texto.substring(i,i+1),"Erro Lexico");
         }
     }

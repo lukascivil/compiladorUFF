@@ -5,9 +5,8 @@
  */
 package standard;
 
-/**
- *
- * @author Tarcisio
+/*
+ * @author Tarcisio e Lucas
  */
 public class Token {
     private int numero;

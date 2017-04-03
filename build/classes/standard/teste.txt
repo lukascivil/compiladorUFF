@@ -1,6 +1,7 @@
+var begin.
 caramba{
-teste.loko
+teste.loko()
 }
-890variavel
+890variavel-=,
 4213
 das12345

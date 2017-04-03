@@ -1,0 +1,9 @@
+var a,b;
+begin
+ read(a,b);
+a:= 1231<2;
+a:=b;
+a:=b+a;
+ if(a<<>>><<<<>>><<<>><<=b)
+ print(cd);
+end.

@@ -13,14 +13,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-/**
- *
- * @author Tarcisio
+/*
+ * @author Tarcisio e Lucas
  */
 
 public class Principal {
 
-    final static String FILE_NAME = "D:\\teste.txt";
+    final static String FILE_NAME = "teste.txt";
     /**
      * @param args the command line arguments
      */
@@ -33,7 +32,7 @@ public class Principal {
             do{
                 tk= lexico.NextToken(scanner);
                 if(tk.getNumero()==-1){
-                    System.out.println("Erro Lexico:\n"+tk.getLexograma()+" Simbolo nao reconhecido");
+                    System.out.println("Erro Lexico -> \n"+tk.getLexograma()+" Simbolo nao reconhecido");
                 }else{
                     System.out.println(tk.getNumero()+"  "+tk.getDescricao()+"  "+tk.getLexograma());
                 }
