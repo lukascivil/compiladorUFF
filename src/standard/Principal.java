@@ -27,12 +27,17 @@ public class Principal {
     final static Charset ENCODING = StandardCharsets.UTF_8;
     public static void main(String[] args) throws IOException {
         Path path = Paths.get(FILE_NAME);
-        Lexico lexico= new Lexico();
-        
+        Lexico lexico= Lexico.getInstance();
+        Token tk;
         try (Scanner scanner =  new Scanner(path, ENCODING.name())){
             do{
-                lexico.NextToken(scanner);
-            }while(scanner.hasNextLine());
+                tk= lexico.NextToken(scanner);
+                if(tk.getNumero()==-1){
+                    System.out.println("Erro Lexico:\n"+tk.getLexograma()+" Simbolo nao reconhecido");
+                }else{
+                    System.out.println(tk.getNumero()+"  "+tk.getDescricao()+"  "+tk.getLexograma());
+                }
+            }while(scanner.hasNextLine() || (lexico.getBuffer()!=null && !lexico.getBuffer().equals("")));
         }catch(IOException ex){
             System.out.println("Nao foi possivel abrir o arquivo");
         }
